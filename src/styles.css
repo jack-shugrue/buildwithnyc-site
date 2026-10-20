@@ -870,6 +870,14 @@ main:focus {
   transition: none;
 }
 
+/* Then it glides up the few px from the in-page button to its floating spot
+   (the page has already carried that button a scroll step down). */
+.work-button[data-lifting] {
+  transition:
+    transform var(--nyco-motion-slide-duration) var(--nyco-motion-slide-easing),
+    translate 200ms var(--nyco-motion-slide-easing);
+}
+
 /* Leaving: shrinks a little and fades where it is. */
 .work-button[data-phase='leaving'] {
   transform: scale(0.9);

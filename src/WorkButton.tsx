@@ -15,6 +15,8 @@ const RISE_OFFSET = 128;
 const HYSTERESIS = 6;
 /** Matches the leave transition in styles.css. */
 const LEAVE_MS = 200;
+/** Matches the lift-off glide in styles.css. */
+const LIFT_MS = 200;
 /**
  * Over the last this-many px of scrolling before the section's own button
  * reaches the floating one, the floating one settles down onto the page:
@@ -62,6 +64,7 @@ export function WorkButton({ sections, onOpen }: WorkButtonProps) {
     /** 1 while far from the landing spot, 0 on it. */
     progress: 1,
     timer: 0,
+    liftTimer: 0,
   });
 
   // The in-page button is hidden while the floating one stands in for it.
@@ -114,15 +117,27 @@ export function WorkButton({ sections, onOpen }: WorkButtonProps) {
     const m = machine.current;
     if (m.phase !== 'raising') return;
     const el = wrapper.current!;
-    // Lifting off the in-page button (scrolling back up): appear right where
-    // it is, with no rise from below.
+    // Lifting off the in-page button (scrolling back up): no rise from below.
+    // By now the page has carried the in-page button a little below the
+    // floating spot (a scroll step, at least), so the floating one starts
+    // exactly where it is and glides up those few px, rather than popping up.
     const liftOff = m.progress < 1;
-    if (liftOff) el.dataset.instant = '';
-    void el.offsetHeight; // Commit the lowered position first, so it animates.
+    if (liftOff) {
+      el.dataset.instant = '';
+      const button = el.querySelector('button')!;
+      const slot = m.shown ? slotFor(m.shown)?.getBoundingClientRect() : undefined;
+      const gap = slot ? Math.max(0, slot.top - (el.offsetTop + button.offsetTop)) : 0;
+      el.style.translate = `0 ${gap}px`;
+    }
+    void el.offsetHeight; // Commit the starting position first, so it animates.
     setPhase.current('up');
     if (liftOff) {
       void el.offsetHeight;
       delete el.dataset.instant;
+      el.dataset.lifting = '';
+      el.style.translate = '';
+      window.clearTimeout(m.liftTimer);
+      m.liftTimer = window.setTimeout(() => delete el.dataset.lifting, LIFT_MS);
     }
     sync.current(); // In case the section changed meanwhile.
   }, [raiseCount]);
@@ -184,6 +199,7 @@ export function WorkButton({ sections, onOpen }: WorkButtonProps) {
     resize.observe(document.body);
     return () => {
       window.clearTimeout(m.timer);
+      window.clearTimeout(m.liftTimer);
       // Leaving (e.g. the window widened to desktop): show the in-page buttons again.
       for (const section of sections) {
         const slot = slotFor(section.id);

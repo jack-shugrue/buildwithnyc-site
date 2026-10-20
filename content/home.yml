@@ -1,0 +1,146 @@
+hero:
+  title: Put your data, design, and policy skills to work to improve the lives of millions of New Yorkers.
+  subtitle: '[Our Office](https://www.nyc.gov/site/opportunity/index.page) uses research, data, and design to improve government services, reduce poverty, and expand opportunity for New Yorkers.'
+  applyLabel: Apply now
+ourWork:
+  title: Our Work
+  items:
+    - title: Equity
+      body: We believe that equal opportunity and the possibility of upward mobility must be genuine — that where you start out in life should not dictate where you end up. But too often poverty, racism, and other structural inequalities and social conditions create barriers for New Yorkers that limit their ability to advance and participate fully in the city’s economic and civic life.
+    - title: Evidence
+      body: We believe that the public sector should make decisions based on rigorous attention to data — drawn from research and evaluation, performance measurement, and the voices of those who experience public services as well as the challenges they are meant to address. Policies and programs exist that can effectively reduce poverty and broaden opportunity; government should invest in those that work, and end those that do not.
+    - title: Innovation
+      body: We believe that more solutions are required to address unmet needs and stubborn problems — and are optimistic that new approaches delivered through government can achieve large-scale impact. Innovation is fundamentally about getting better results, and it demands a commitment to assess outcomes rigorously, capture and respond to lessons, and accept the risk that some efforts will fail.
+sections:
+  - title: Digital & Data Products
+    body: |-
+      Our digital work focuses on making it easier for New Yorkers to access services by connecting them to clear, actionable information about benefits, programs, services, and employment. We do this through two digital tools, [ACCESS NYC](https://access.nyc.gov) and [Jobs NYC](https://jobs.nyc.gov/).
+
+      We support open source and scalable technology in the services we develop, such as the NYC Benefits Platform (open source rules engine and plain-language content dataset), so the City and other civic technologists can build upon what works.
+
+      Our office also manages the [Poverty Atlas NYC](https://www.nyc.gov/site/opportunity/poverty-in-nyc/poverty-atlas.page), [Equity NYC](https://equity.nyc.gov), and the [Workforce Data Portal](https://workforcedata.nyc.gov) sites to make the City’s data more accessible, transparent, and actionable.
+    buttonLabel: View Product work
+    media:
+      - kind: image
+        image: /media/placeholders/product-1.svg
+        alt: Product work example 1 (placeholder)
+        caption: Digital & Data Products
+        linkText: NYC Workforce Data Portal
+        linkUrl: https://workforcedata.nyc.gov
+        fit: contain
+      - kind: video
+        video: /media/placeholders/sample-loop.mp4
+        alt: Product work example 2 (placeholder video)
+        caption: Digital & Data Products
+        linkText: ACCESS NYC
+        linkUrl: https://access.nyc.gov
+        fit: contain
+      - kind: image
+        image: /media/placeholders/product-3.svg
+        alt: Product work example 3 (placeholder)
+        caption: Digital & Data Products
+        linkText: Jobs NYC
+        linkUrl: https://jobs.nyc.gov/
+        fit: contain
+      - kind: image
+        image: /media/placeholders/product-4.svg
+        alt: Product work example 4 (placeholder)
+        caption: Digital & Data Products
+        linkText: NYC Workforce Data Portal
+        linkUrl: https://workforcedata.nyc.gov
+        fit: contain
+      - kind: image
+        image: /media/placeholders/product-5.svg
+        alt: Product work example 5 (placeholder)
+        caption: Digital & Data Products
+        linkText: ACCESS NYC
+        linkUrl: https://access.nyc.gov
+        fit: contain
+      - kind: image
+        image: /media/placeholders/product-6.svg
+        alt: Product work example 6 (placeholder)
+        caption: Digital & Data Products
+        linkText: Jobs NYC
+        linkUrl: https://jobs.nyc.gov/
+        fit: contain
+  - title: Service Design
+    body: |-
+      NYC Opportunity launched the Service Design Studio (the Studio) to help spread valuable methodologies that are often underused within government spaces. As a discipline, service design is a vehicle for advancing positive change. Our approach begins by trying to understand the needs of the people who use and oversee public services, and designing the service to meet those needs. With that knowledge, our team works with City agency partners to shape services in a way that are effective, user-friendly, sustainable, and scalable.
+
+      Our studio is made up of designers with backgrounds in policy, planning, user experience and technology.
+
+      Sitting within the Mayor’s Office for Economic Opportunity, the Studio also draws on staff with expertise in other areas, such as program development, performance management, and evaluation. Our collective team has experience working collaboratively with City agencies to help advance their goals.
+    buttonLabel: View Service Design work
+    media:
+      - kind: image
+        image: /media/placeholders/service-design-photo.svg
+        alt: Service Design work (placeholder photo)
+        caption: Service Design
+        fit: cover
+  - title: Research
+    body: |-
+      Research of various forms is inherent in all of NYC Opportunity’s work. Understanding client perspectives, programmatic best practices, and demographic conditions are all central to initiatives, digital products, and policies that are evidence-driven and responsive to the needs of low-income New Yorkers.
+
+      Our Poverty Research Unit produces the annual official poverty measure of the New York City government, the NYCgov Measure, that provides a more nuanced understanding of poverty in New York City than the federal rate allows. Our poverty research also informs the City’s understanding of inequality and the effectiveness of policies in addressing disparities among local residents and communities.
+    buttonLabel: View Research work
+    media:
+      - kind: image
+        image: /media/placeholders/research-1.svg
+        alt: Research work example 1 (placeholder)
+        caption: Research
+        linkText: NYCgov Poverty Measure
+        linkUrl: https://www.nyc.gov/site/opportunity/poverty-in-nyc/poverty-measure.page
+        fit: contain
+      - kind: image
+        image: /media/placeholders/research-2.svg
+        alt: Research work example 2 (placeholder)
+        caption: Research
+        linkText: NYCgov Poverty Measure
+        linkUrl: https://www.nyc.gov/site/opportunity/poverty-in-nyc/poverty-measure.page
+        fit: contain
+      - kind: image
+        image: /media/placeholders/research-3.svg
+        alt: Research work example 3 (placeholder)
+        caption: Research
+        linkText: NYCgov Poverty Measure
+        linkUrl: https://www.nyc.gov/site/opportunity/poverty-in-nyc/poverty-measure.page
+        fit: contain
+      - kind: image
+        image: /media/placeholders/research-4.svg
+        alt: Research work example 4 (placeholder)
+        caption: Research
+        linkText: NYCgov Poverty Measure
+        linkUrl: https://www.nyc.gov/site/opportunity/poverty-in-nyc/poverty-measure.page
+        fit: contain
+      - kind: image
+        image: /media/placeholders/research-5.svg
+        alt: Research work example 5 (placeholder)
+        caption: Research
+        linkText: NYCgov Poverty Measure
+        linkUrl: https://www.nyc.gov/site/opportunity/poverty-in-nyc/poverty-measure.page
+        fit: contain
+      - kind: image
+        image: /media/placeholders/research-6.svg
+        alt: Research work example 6 (placeholder)
+        caption: Research
+        linkText: NYCgov Poverty Measure
+        linkUrl: https://www.nyc.gov/site/opportunity/poverty-in-nyc/poverty-measure.page
+        fit: contain
+  - title: Programs & Evaluation
+    body: |-
+      NYC Opportunity helps City partners to design, pilot, and assess innovative anti-poverty and equity strategies. Drawing on our expertise in implementation, performance management, and evaluation, we have helped to launch over 100 human services programs and systems-change initiatives in partnership with over 30 agencies and Mayoral offices.
+
+      We work across a diverse array of priority policy areas and populations, including: workforce development and advancement; financial empowerment, asset building, and cash transfers; education; health and mental health; homelessness; opportunity youth; legal system-involved youth and adults, and others. Where strategies show promise, NYC Opportunity works with independent research firms to conduct evaluations of projects within our portfolio, as well as select citywide initiatives. These evaluations inform the City’s program and budget decision-making and contribute to public policy in the social services more generally.
+    buttonLabel: View P&E work
+    media:
+      - kind: image
+        image: /media/placeholders/programs-evaluation-photo.svg
+        alt: Programs & Evaluation work (placeholder photo)
+        caption: Programs & Evaluation
+        fit: cover
+openPositions:
+  title:
+    - Interested in applying?
+    - Check out our open positions
+  applyLabel: Apply now
+  emptyMessage: There are no open positions right now. Sign up for our newsletter below to hear when there are.

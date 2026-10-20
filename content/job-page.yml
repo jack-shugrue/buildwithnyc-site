@@ -1,0 +1,6 @@
+applyCardTitle:
+  - Think you’d be a good fit?
+  - We’d love to hear from you.
+applyCardButton: Apply to this position
+stepOne: Fill out our application form. It asks for a resume and cover letter.
+stepTwo: Then apply on NYC Jobs too, using job ID {jobId}.

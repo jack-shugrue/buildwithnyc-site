@@ -1,0 +1,1264 @@
+/*
+ * Page layout, plus the two pieces that aren't in the library: the floating
+ * "View ___ work" button and the lightbox. Everything else is library
+ * components on library tokens.
+ */
+
+/* Public Sans everywhere; only the hero subtitle is serif. */
+:root {
+  --nyco-type-h1-family: var(--nyco-font-family-primary);
+  --nyco-type-h2-family: var(--nyco-font-family-primary);
+  --nyco-type-h3-family: var(--nyco-font-family-primary);
+  --nyco-type-display-section-family: var(--nyco-font-family-primary);
+  /* Gray for reading text: section descriptions, the subtitle, captions. */
+  --text-gray: #565656;
+  /* Where floating controls sit: the View work button and the lightbox's
+     controls share this spot. */
+  --float-bottom: calc(var(--nyco-space-4) + env(safe-area-inset-bottom));
+}
+
+/* The library's button styles size it as border-box, which <button> is by
+   default but a link styled as a button is not. */
+a.nyco-button {
+  box-sizing: border-box;
+}
+
+/* In-page links (Careers, Apply now, About) glide instead of jumping. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* No rubber-band past the top or bottom of the page: no gap above the City
+   bar, nothing below the footer. */
+html {
+  overscroll-behavior-y: none;
+}
+
+html.is-locked {
+  overflow: hidden;
+}
+
+body {
+  /* Nothing ever scrolls the page sideways (a menu left open while the
+     window narrows, say). clip, not hidden, keeps the sticky header working. */
+  overflow-x: clip;
+  margin: 0;
+  background: var(--nyco-color-bg-primary);
+  color: var(--nyco-color-text-primary);
+  font-family: var(--nyco-font-family-primary);
+}
+
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Logo ---- */
+
+a:has(> .logo) {
+  text-decoration: none;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #3070cf;
+}
+
+.logo__badge {
+  display: block;
+  inline-size: 3.25rem;
+  block-size: auto;
+}
+
+.logo__name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ---- Page ---- */
+
+/* The page margin is the only side limit: 16px on phones, 32px on tablets,
+   56px on desktop, at any width. */
+.page {
+  padding-inline: var(--nyco-page-inline);
+}
+
+.page p {
+  margin: 0;
+}
+
+.hero {
+  padding-block: var(--content-start) 5rem;
+}
+
+.hero__title {
+  margin: 0 0 var(--nyco-space-2);
+  font-size: 1.875rem;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.hero__subtitle {
+  font-family: var(--nyco-font-family-secondary);
+  text-wrap: pretty;
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+.hero__apply {
+  margin-block-start: var(--nyco-space-4);
+  text-decoration: none;
+}
+
+/* Page not found: two buttons under the words, as far below them as the
+   hero's Apply now, 12px apart (side by side where they fit). */
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nyco-space-1-5);
+  margin-block-start: var(--nyco-space-4);
+}
+
+.not-found__actions .nyco-button {
+  --nyco-font-weight-button: 400;
+
+  text-decoration: none;
+}
+
+/* No jobs open: the CMS's message, centered under the centered heading. */
+.open-positions__empty {
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* A closed job's note, between the heading and the list. */
+.open-positions__notice.nyco-info-block {
+  margin-block-end: var(--nyco-space-3);
+  border-radius: var(--nyco-radius-card);
+}
+
+.section-title {
+  margin: 0 0 var(--nyco-space-1-5);
+  font-size: var(--nyco-font-size-3xl);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.our-work {
+  padding-block-end: 5rem;
+}
+
+/* Each section runs to the next one's heading, so the floating button keeps
+   one section's label all the way through it. */
+.work-section {
+  padding-block-end: 6.5rem;
+}
+
+.work-section__text {
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+/* ---- Open positions ---- */
+
+/* 136px below the last section's button, which already has 104px under it. */
+.open-positions {
+  padding-block-start: 2rem;
+}
+
+.open-positions__title {
+  margin: 0 0 var(--nyco-space-3);
+  font-size: var(--nyco-font-size-3xl);
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.open-positions__title span {
+  display: block;
+}
+
+.open-positions__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Each job is a row that opens its page: its title link covers the row,
+ * with Apply now on top. On hover the row turns light gray (12px around
+ * its contents, reaching into the margin so the words stay lined up) and
+ * the title black; pressing shrinks the whole row a touch, like a button.
+ */
+.open-positions__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nyco-space-2);
+  margin-inline: calc(-1 * var(--nyco-space-1-5));
+  padding: var(--nyco-space-1-5);
+  border-radius: var(--nyco-radius-card);
+  corner-shape: var(--nyco-shape-corner);
+}
+
+.open-positions__job {
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+  text-decoration: none;
+  outline: none;
+}
+
+/* The title's link stretches over the whole row. */
+.open-positions__job::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.open-positions__row .nyco-button {
+  position: relative;
+  flex: none;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .open-positions__row:hover {
+    background-color: var(--nyco-color-bg-secondary);
+  }
+
+  .open-positions__row:hover .open-positions__job {
+    color: var(--nyco-color-text-primary);
+  }
+}
+
+/* Touch screens have no hover: the gray shows while pressed. */
+.open-positions__row:has(.open-positions__job[data-pressed]) {
+  background-color: var(--nyco-color-bg-secondary);
+  scale: var(--nyco-motion-press-scale-large);
+}
+
+.open-positions__row:has(.open-positions__job[data-pressed]) .open-positions__job {
+  color: var(--nyco-color-text-primary);
+}
+
+/* Keyboard focus on the title: the ring goes around the whole row. */
+.open-positions__row:has(.open-positions__job[data-focus-visible]) {
+  outline: var(--nyco-focus-width) solid var(--nyco-color-border-focus);
+  outline-offset: var(--nyco-focus-offset);
+}
+
+/* Apply now sits on the gray row: its hover and press go a step darker. */
+.open-positions__row .nyco-button--secondary:is([data-hovered], [data-pressed]) {
+  --nyco-button-bg: var(--nyco-color-bg-tertiary);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .open-positions__row {
+    transition:
+      scale var(--nyco-motion-release-duration) var(--nyco-motion-release-easing),
+      background-color var(--nyco-motion-color-duration) ease;
+  }
+
+  .open-positions__job {
+    transition: color var(--nyco-motion-color-duration) ease;
+  }
+
+  .open-positions__row:has(.open-positions__job[data-pressed]) {
+    transition:
+      scale var(--nyco-motion-press-duration) var(--nyco-motion-press-easing),
+      background-color var(--nyco-motion-color-duration) ease;
+  }
+}
+
+.work-section__action {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--nyco-space-4);
+}
+
+/* Same size as the floating button, so it lands exactly on this one. */
+.work-section__action .nyco-button {
+  padding-inline: var(--nyco-space-4);
+}
+
+/* Regular-weight labels: View work (floating and in-page), the lightbox's
+   Close, Apply now and the open positions' Apply. */
+:is(
+  .work-button__button,
+  .work-section__action .nyco-button,
+  .lightbox__close,
+  .hero__apply,
+  .open-positions__row .nyco-button,
+  .job-steps__button,
+  .apply-card .nyco-button,
+  .floating-apply .nyco-button
+).nyco-button {
+  --nyco-font-weight-button: 400;
+}
+
+.work-section__text + .work-section__text {
+  margin-block-start: var(--nyco-space-3);
+}
+
+.newsletter {
+  margin-block: var(--nyco-space-6) var(--nyco-space-4);
+}
+
+@media (max-width: 1023.98px) {
+  /* On phones the footer lists its links without the logo. */
+  .footer .nyco-footer__home {
+    display: none;
+  }
+
+  /* Room under the last link, so its baseline sits where the phone's rounded
+     corners begin (56px up), not down in the curve. */
+  .footer.nyco-footer {
+    padding-block-end: 3rem;
+  }
+}
+
+.newsletter .nyco-newsletter__title {
+  font-family: var(--nyco-font-family-primary);
+}
+
+/* ---- Job page ----
+ *
+ * Spacing (phone / tablet / desktop):
+ *   site header → team line             72 / 72 / 128 (the home hero's title)
+ *   team line → title → lead            8, then 16
+ *   lead → fact tiles                   32
+ *   panel → its note (info block)       16
+ *   note → About the role               64 / 64 / 72
+ *   between sections                    64 / 80 / 96
+ *   heading → its content               12; paragraphs 16 apart; list items 8
+ *   last section → apply card           96 / 112 / 144
+ *   apply card → footer                 64 / 72 / 96
+ * Facts: four tiles 8px apart, 16px inside (24 on desktop); 8 from the
+ * tiles to the How to apply panel (16 inside, 24 on desktop); 12 from its
+ * title to the first step; steps 24 apart; 8 from a step's text to its
+ * button. Section titles sit 12px above their text.
+ * Apply card: 16px around the button; the title 8 / 12 / 16 further in;
+ * 48 / 64 / 80 between the title and the button. Card → footer 32 / 40 / 48.
+ */
+
+/* As far below the header as the home page's hero title. */
+.job__header {
+  margin-block-start: var(--content-start);
+}
+
+.job__team {
+  font-size: var(--nyco-font-size-sm);
+  line-height: 1.4;
+  color: var(--text-gray);
+}
+
+.page .job__title {
+  margin: var(--nyco-space-1) 0 var(--nyco-space-2);
+  font-size: 1.875rem;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+/* The lead reads like the home page's subtitle: serif, gray. */
+.job__lead {
+  font-family: var(--nyco-font-family-secondary);
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+/* Descriptions wrap "pretty" everywhere: no lone last words. Text of up to
+   6 lines is balanced instead (useBalancedText sets data-wrap). */
+:where(
+  .hero__subtitle,
+  .work-section__text,
+  .job__lead,
+  .job-text,
+  .job-list,
+  .job-steps p,
+  .job-info,
+  .open-positions__job
+) {
+  text-wrap: pretty;
+}
+
+[data-wrap='balance'] {
+  text-wrap: balance;
+}
+
+/* The key facts, each in its own gray tile: one full-width column on
+   phones, two from tablets up. 8px between tiles, and from the tiles to
+   How to apply. */
+.job-facts {
+  display: grid;
+  gap: var(--nyco-space-1);
+  margin: var(--nyco-space-4) 0 var(--nyco-space-1);
+}
+
+@media (min-width: 768px) {
+  .job-facts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.job-fact {
+  padding: var(--nyco-space-1-5) var(--nyco-space-2);
+  border-radius: var(--nyco-radius-card);
+  background: var(--nyco-color-bg-secondary);
+}
+
+/* Label and value the same size: the label gray, the value black. */
+.job-fact dt {
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+.job-fact dd {
+  margin: 0;
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+}
+
+/* How to apply: its own panel, with the two numbered steps. */
+.job-panel {
+  padding: var(--nyco-space-2);
+  border-radius: var(--nyco-radius-card);
+  background: var(--nyco-color-bg-secondary);
+}
+
+.page .job-panel__title {
+  margin: 0 0 var(--nyco-space-1-5);
+  font-size: var(--nyco-font-size-3xl);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+/* Secondary buttons sit on the gray panel: their hover and press go a step
+   darker than the panel, instead of matching it. */
+.job-panel .nyco-button--secondary:is([data-hovered], [data-pressed]) {
+  --nyco-button-bg: var(--nyco-color-bg-tertiary);
+}
+
+/*
+ * The two steps: a number in a white circle (it sits on the gray panel),
+ * then the text with its full-width button 8px under it. The number's
+ * baseline lines up with the text's first line.
+ */
+.job-steps {
+  display: grid;
+  gap: var(--nyco-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.job-steps li {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  column-gap: var(--nyco-space-2);
+  align-items: baseline;
+  counter-increment: step;
+}
+
+.job-steps li::before {
+  content: counter(step);
+  block-size: 2.75rem;
+  border-radius: var(--nyco-radius-pill);
+  background: var(--nyco-color-bg-primary);
+  color: var(--nyco-color-text-primary);
+  font-size: var(--nyco-font-size-lg);
+  line-height: 2.75rem;
+  text-align: center;
+}
+
+.page .job-steps p {
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+.job-steps__button {
+  gap: var(--nyco-space-1);
+  inline-size: 100%;
+  margin-block-start: var(--nyco-space-1);
+  text-decoration: none;
+}
+
+/* The note under the panel: plain text, flush with the panel's left edge. */
+.page .job-note {
+  margin-block-start: var(--nyco-space-2);
+}
+
+/* Notes in About the role, in the library's info block. */
+/* Corners match the panel's; the block hugs its words. */
+.job-info.nyco-info-block {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  box-sizing: border-box;
+  margin-block-start: var(--nyco-space-2);
+  border-radius: var(--nyco-radius-card);
+}
+
+.job-section {
+  margin-block-start: 4rem;
+}
+
+.job-text {
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+.page .job-text + .job-text {
+  margin-block-start: var(--nyco-space-2);
+}
+
+.job-list {
+  display: grid;
+  gap: var(--nyco-space-1);
+  margin: 0;
+  padding-inline-start: 1.25em;
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+.job-list li::marker {
+  font-size: 0.8em;
+}
+
+/* Sub-bullets, under a bullet. */
+.job-list .job-list {
+  margin-block-start: var(--nyco-space-1);
+}
+
+/* A bullet written as a paragraph in the CMS: no extra space. */
+.job-list li > p {
+  margin: 0;
+}
+
+.job-skills {
+  margin-block-start: var(--nyco-space-3);
+}
+
+/*
+ * The closing card, margin to margin: gray, the newsletter card's corners;
+ * the question on two lines, then a full-width button 16px in from the
+ * card's edges, its corners concentric with the card's (24 - 16 = 8px).
+ */
+.apply-card {
+  --apply-card-radius: calc(var(--nyco-radius-field) * 2);
+  --apply-card-inset: var(--nyco-space-2);
+  --apply-card-button-radius: calc(var(--apply-card-radius) - var(--apply-card-inset));
+
+  margin-block: 6rem var(--nyco-space-4);
+  padding: var(--apply-card-inset);
+  border-radius: var(--apply-card-radius);
+  corner-shape: var(--nyco-shape-corner);
+  background: var(--nyco-color-bg-secondary);
+}
+
+.page .apply-card__title {
+  margin: 0;
+  padding: var(--nyco-space-1) var(--nyco-space-1) 0;
+  font-size: var(--nyco-font-size-3xl);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.apply-card__title span {
+  display: block;
+}
+
+.apply-card__action {
+  margin-block-start: var(--nyco-space-6);
+}
+
+.apply-card__action .nyco-button {
+  /* A gentler press for a full-width button: the regular one moves its
+     wide edges too far. */
+  --nyco-motion-press-scale: var(--nyco-motion-press-scale-large);
+
+  inline-size: 100%;
+  border-radius: var(--apply-card-button-radius);
+  text-decoration: none;
+}
+
+/* Phones and tablets: while the apply button floats, the card waits unseen;
+   once it lands the gray and the words fade in (and out as it lifts off). */
+@media (max-width: 1023.98px) {
+  /* Coming in: the gray, then the two lines as one, rising 8px as they
+     fade in, the second a beat (50ms) behind the first: one smooth motion
+     rather than steps. */
+  .apply-card {
+    transition: background-color 400ms ease;
+  }
+
+  .apply-card__title span {
+    transition:
+      opacity 500ms ease,
+      translate 600ms var(--nyco-motion-slide-easing);
+    transition-delay: 100ms;
+  }
+
+  .apply-card__title span:nth-child(2) {
+    transition-delay: 150ms;
+  }
+
+  /* Going out, the same in reverse, a little quicker: the lines together
+     (the second leading by 40ms), then the gray. */
+  .apply-card[data-waiting] {
+    background-color: transparent;
+    transition-delay: 150ms;
+  }
+
+  .apply-card[data-waiting] .apply-card__title span {
+    opacity: 0;
+    translate: 0 0.5rem;
+    transition-duration: 300ms;
+    transition-delay: 40ms;
+  }
+
+  .apply-card[data-waiting] .apply-card__title span:nth-child(2) {
+    transition-delay: 0ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apply-card,
+  .apply-card__title span {
+    transition: none;
+  }
+}
+
+/* The page nav's names at the description size. */
+.job__nav .nyco-page-nav__label {
+  font-size: var(--nyco-font-size-lg);
+}
+
+/* Keyboard users' first stop: hidden until it has focus. */
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--nyco-space-1);
+  inset-inline-start: var(--nyco-page-inline);
+  z-index: 100;
+  padding: var(--nyco-space-1) var(--nyco-space-2);
+  border-radius: var(--nyco-radius-md);
+  background: var(--nyco-color-bg-primary);
+  color: var(--nyco-color-text-link);
+  font-size: var(--nyco-font-size-md);
+  translate: 0 -200%;
+}
+
+.skip-link:focus {
+  translate: none;
+  outline: var(--nyco-focus-width) solid var(--nyco-color-border-focus);
+  outline-offset: var(--nyco-focus-offset);
+}
+
+/* The skip link focuses main itself; it needs no ring of its own. */
+main:focus {
+  outline: none;
+}
+
+/*
+ * Phones and tablets: the floating apply button. It rises from below the
+ * screen; over its last 120px (--float, 1 → 0) it shrinks from 105% to
+ * actual size and its shadow fades, then it hands over to the closing
+ * card's button in place. Lifting off is in place too (data-instant).
+ */
+.floating-apply {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: var(--float-bottom);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  transform: translateY(calc(100% + var(--float-bottom) + var(--nyco-space-3)));
+  transition: transform 200ms ease-in;
+}
+
+.floating-apply[data-state='up'] {
+  transform: none;
+  transition: transform var(--nyco-motion-slide-duration) var(--nyco-motion-slide-easing);
+}
+
+.floating-apply[data-instant] {
+  transition: none;
+}
+
+.floating-apply .nyco-button {
+  pointer-events: auto;
+  scale: calc(1 + 0.05 * var(--float, 1));
+  /* Round (half its 56px height) while floating, the card button's 8px
+     corners once landed. */
+  border-radius: calc(8px + (28px - 8px) * var(--float, 1));
+  padding-inline: var(--nyco-space-4);
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow:
+    0 0.5rem 1.5rem -0.5rem rgb(0 0 0 / calc(0.28 * var(--float, 1))),
+    0 0.125rem 0.375rem rgb(0 0 0 / calc(0.08 * var(--float, 1)));
+}
+
+@media (min-width: 768px) {
+  .page .job__title {
+    font-size: var(--nyco-font-size-7xl);
+    line-height: 1.2;
+  }
+
+  .job__lead {
+    max-inline-size: 50rem;
+    font-size: var(--nyco-font-size-2xl);
+  }
+
+  .job-panel__facts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .job-section {
+    margin-block-start: 5rem;
+  }
+
+  :is(.job-info, .job-note) + .job-section {
+    margin-block-start: 4rem;
+  }
+
+  .apply-card {
+    margin-block: 7rem var(--nyco-space-5);
+  }
+
+  .page .apply-card__title {
+    padding: var(--nyco-space-1-5) var(--nyco-space-1-5) 0;
+    font-size: var(--nyco-font-size-4xl);
+  }
+
+  .apply-card__action {
+    margin-block-start: var(--nyco-space-7);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* The text on the left; the page nav's bars at the right, as tall as the
+     text so they stay in view. */
+  /*
+   * The page nav's column is fixed at its closed width (32px bars, 16px each
+   * side), so opening it lays the names over the page instead of squeezing
+   * the text column (which re-wrapped the whole article on every hover).
+   */
+  .job__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 46rem) 4rem;
+    justify-content: space-between;
+    column-gap: var(--nyco-space-9);
+  }
+
+  /* The bars 16px from the screen's right edge, not the 56px page margin:
+     shifted into the margin, the open names still growing leftward. */
+  .job__main {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .job__nav.nyco-page-nav {
+    grid-row: 1;
+    grid-column: 2;
+    inline-size: 4rem;
+    box-sizing: border-box;
+    justify-self: end;
+    translate: var(--nyco-page-inline) 0;
+  }
+
+  .job-section {
+    margin-block-start: 6rem;
+  }
+
+  .job-fact {
+    padding: 1.25rem var(--nyco-space-3);
+  }
+
+  .job-panel {
+    padding: var(--nyco-space-3);
+  }
+
+  :is(.job-info, .job-note) + .job-section {
+    margin-block-start: var(--nyco-space-9);
+  }
+
+  .job__header {
+    margin-block-start: var(--content-start);
+  }
+
+  .apply-card {
+    margin-block: 9rem var(--nyco-space-6);
+  }
+
+  .page .apply-card__title {
+    padding: var(--nyco-space-2) var(--nyco-space-2) 0;
+    font-size: var(--nyco-font-size-5xl);
+  }
+
+  .apply-card__action {
+    margin-block-start: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-apply,
+  .floating-apply[data-state='up'] {
+    transform: none;
+    transition: opacity 150ms linear;
+  }
+
+  .floating-apply:not([data-state='up']) {
+    opacity: 0;
+  }
+}
+
+/* ---- Pill buttons (floating button and lightbox controls) ---- */
+
+.pill.nyco-button {
+  border-radius: var(--nyco-radius-pill);
+  font-size: var(--nyco-font-size-lg);
+}
+
+/* ---- Floating "View ___ work" button ---- */
+
+.work-button {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: var(--float-bottom);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Waiting below the screen, ready to rise. No transition, so it jumps here. */
+.work-button:is([data-phase='down'], [data-phase='raising']) {
+  transform: translateY(calc(100% + var(--float-bottom) + var(--nyco-space-3)));
+}
+
+.work-button[data-phase='up'] {
+  transform: none;
+  transition: transform var(--nyco-motion-slide-duration) var(--nyco-motion-slide-easing);
+}
+
+/* Lifting off the in-page button: no rise, it's already in place. */
+.work-button[data-instant] {
+  transition: none;
+}
+
+/* Leaving: shrinks a little and fades where it is. */
+.work-button[data-phase='leaving'] {
+  transform: scale(0.9);
+  opacity: 0;
+  transition:
+    transform 200ms ease-in,
+    opacity 200ms ease-in;
+}
+
+.work-button__button.nyco-button {
+  /* --float runs from 1 (floating above the page) to 0 (landed on the
+     in-page button): it shrinks from 105% to actual size and its shadow
+     fades, so it settles onto the page as the plain neutral button. */
+  pointer-events: auto;
+  scale: calc(1 + 0.05 * var(--float, 1));
+  padding-inline: var(--nyco-space-4);
+  box-shadow:
+    0 0.5rem 1.5rem -0.5rem rgb(0 0 0 / calc(0.18 * var(--float, 1))),
+    0 0.125rem 0.375rem rgb(0 0 0 / calc(0.06 * var(--float, 1)));
+}
+
+/* ---- Lightbox ---- */
+
+.lightbox {
+  inline-size: 100%;
+  max-inline-size: none;
+  block-size: 100dvh;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--nyco-color-bg-primary);
+  color: var(--nyco-color-text-primary);
+  outline: none;
+}
+
+/* The lightbox covers the screen itself; a clear backdrop lets the page
+   fade straight to it, and back on close. */
+.lightbox::backdrop {
+  background: transparent;
+}
+
+/* Opens at once; closing fades back to the page where it was. */
+.lightbox[data-closing] {
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
+
+.lightbox__layout {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  box-sizing: border-box;
+  padding: calc(var(--nyco-space-3) + env(safe-area-inset-top)) var(--nyco-page-inline)
+    var(--float-bottom);
+}
+
+/* Tablets: the frame sits as far in from the sides as from the top (24px),
+   with the label, link and count flush with it. */
+@media (min-width: 768px) {
+  .lightbox__layout {
+    padding-inline: var(--nyco-space-3);
+  }
+}
+
+.lightbox__media {
+  position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow: hidden;
+  background: var(--nyco-color-bg-secondary);
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.lightbox__slide {
+  position: absolute;
+  inset: var(--nyco-space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* All of a team's media is stacked in the frame and stays loaded; only the
+   showing item is visible. Slides.tsx fades and slides items on each step. */
+:is(.lightbox__slide, .carousel__slide):not([data-active]) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
+ * Pause / play for looping videos, in the frame's bottom-right corner,
+ * always visible (a hidden-until-hover control can't be found by touch and
+ * is easy to miss). Frosted: a see-through gray a step darker than the
+ * frame, over a blur of whatever is behind it, so it stays legible if media
+ * ever runs under it. The icon is near-black on light gray, well above 3:1.
+ * The blur never changes, so it doesn't redraw while scrolling.
+ */
+.media-toggle.nyco-button {
+  --nyco-button-bg: color-mix(in srgb, var(--nyco-color-bg-secondary-hover) 72%, transparent);
+  --nyco-button-border: transparent;
+  position: absolute;
+  inset-block-end: var(--nyco-space-2);
+  inset-inline-end: var(--nyco-space-2);
+  z-index: 1;
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+}
+
+.media-toggle.nyco-button:is([data-hovered], [data-pressed]) {
+  --nyco-button-bg: color-mix(in srgb, var(--nyco-color-bg-tertiary) 80%, transparent);
+}
+
+.lightbox__slide :is(img, video) {
+  display: block;
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  object-fit: contain;
+}
+
+/* The count shares the label's line; the link runs full width under both. */
+.lightbox__caption {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--nyco-space-2);
+  align-items: baseline;
+  padding-block-start: var(--nyco-space-2);
+  min-block-size: 3.5rem;
+}
+
+.lightbox__text {
+  display: contents;
+}
+
+.lightbox__caption p {
+  margin: 0;
+}
+
+.lightbox__link.nyco-link {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.lightbox__count {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Label and link match the section text: 18px regular. */
+.lightbox__label {
+  font-size: var(--nyco-font-size-lg);
+  line-height: 1.35;
+  color: var(--text-gray);
+}
+
+.lightbox__link.nyco-link {
+  font-size: var(--nyco-font-size-lg);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.lightbox__count {
+  font-size: var(--nyco-font-size-sm);
+  color: var(--text-gray);
+  font-variant-numeric: tabular-nums;
+}
+
+.lightbox__controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--nyco-space-1);
+  padding-block-start: var(--nyco-space-6);
+}
+
+.lightbox__close.nyco-button {
+  padding-inline: var(--nyco-space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-button[data-phase] {
+    transform: none;
+    transition: opacity 150ms linear;
+  }
+
+  .work-button:is([data-phase='down'], [data-phase='raising']) {
+    opacity: 0;
+  }
+}
+
+/* The lightbox fades in when it opens. */
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox[open]:not([data-closing]) {
+    animation: lightbox-fade-in 200ms ease-out;
+  }
+}
+
+@keyframes lightbox-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---- Desktop carousel (stands in for the lightbox from 1024px) ---- */
+
+.carousel__frame {
+  position: relative;
+  aspect-ratio: 21 / 20;
+  overflow: hidden;
+  background: var(--nyco-color-bg-secondary);
+  touch-action: pan-y;
+  user-select: none;
+}
+
+/* Screenshots sit inside the frame with gray around them, leaving room for
+   the dots at the bottom. Photos (fit: cover) fill it edge to edge. */
+.carousel__slide {
+  position: absolute;
+  inset: 2.5rem 2.5rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel__slide[data-fit='cover'] {
+  inset: 0;
+}
+
+.carousel__slide :is(img, video) {
+  display: block;
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  object-fit: contain;
+}
+
+.carousel__slide[data-fit='cover'] :is(img, video) {
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  max-block-size: none;
+  object-fit: cover;
+}
+
+/* Progress dots, inside the frame at the bottom: 8px, 4px apart. They show
+   where you are; the arrows below move between items. */
+.carousel__dots {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: var(--nyco-space-3);
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.carousel__dot {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: var(--nyco-radius-pill);
+  background: var(--nyco-color-bg-tertiary);
+  transition: background-color var(--nyco-motion-color-duration);
+}
+
+.carousel__dot[data-current] {
+  background: var(--nyco-color-text-primary);
+}
+
+.carousel__controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--nyco-space-1);
+  margin-block-start: var(--nyco-space-2);
+}
+
+/* ---- Tablet and desktop hero (768px and up): desktop type sizes ---- */
+
+@media (min-width: 768px) {
+  .hero__title {
+    font-size: var(--nyco-font-size-7xl);
+    line-height: 1.2;
+  }
+
+  /* 800px at most, so the first line ends at "services," and "reduce
+     poverty" starts the second, rather than one long first line. */
+  .hero__subtitle {
+    max-inline-size: 50rem;
+    font-size: var(--nyco-font-size-2xl);
+  }
+}
+
+/* ---- Tablet only (768–1023px): much more room between team sections ---- */
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .work-section {
+    padding-block-end: 10rem;
+  }
+
+  /* 160px below the last section's button. */
+  .open-positions {
+    padding-block-start: 0;
+  }
+}
+
+/* ---- Desktop layout (1024px and up) ---- */
+
+@media (min-width: 1024px) {
+  /* 56px page margin; the header and footer follow it too. */
+  :root {
+    --nyco-page-inline: 3.5rem;
+  }
+
+  .hero {
+    max-inline-size: 60rem;
+    padding-block: var(--content-start) 7rem;
+  }
+
+  /* Our Work takes the left column, the same width as the carousels. */
+  .our-work {
+    max-inline-size: calc(50% - var(--nyco-space-3) / 2);
+    padding-block-end: 6.5rem;
+  }
+
+  /* Carousel on the left, heading and text on the right, tops aligned. */
+  .work-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--nyco-space-3);
+    align-items: start;
+    padding-block-end: 6.5rem;
+  }
+
+  /* 256px under the last section's carousel. */
+  .open-positions {
+    max-inline-size: 36rem;
+    margin-inline: auto;
+    padding-block-start: 9.5rem;
+  }
+
+  .open-positions__title {
+    margin-block-end: var(--nyco-space-4);
+    font-size: var(--nyco-font-size-5xl);
+    line-height: 1.25;
+  }
+
+  .newsletter {
+    max-inline-size: 37.5rem;
+    margin: var(--nyco-space-6) auto 10rem;
+    text-align: center;
+  }
+}
+
+/* Review only (?review): the switches, bottom right, above everything. */
+.review-controls {
+  position: fixed;
+  display: grid;
+  gap: var(--nyco-space-0-5);
+  z-index: 100;
+  inset-block-end: var(--nyco-space-2);
+  inset-inline-end: var(--nyco-space-2);
+  padding: var(--nyco-space-1) var(--nyco-space-1-5);
+  border-radius: var(--nyco-radius-card);
+  background: var(--nyco-color-bg-primary);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 16%);
+}
+
+/*
+ * Where each page's content starts below the header: 72px, 128px on
+ * desktop. The review switch "Lower content start" tries 96px on phones,
+ * 120px on tablets and 174px on desktop.
+ */
+:root {
+  --content-start: 4.5rem;
+}
+
+:root[data-start='lower'] {
+  --content-start: 6rem;
+}
+
+@media (min-width: 768px) {
+  :root[data-start='lower'] {
+    --content-start: 7.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --content-start: 8rem;
+  }
+
+  :root[data-start='lower'] {
+    --content-start: 10.875rem;
+  }
+}

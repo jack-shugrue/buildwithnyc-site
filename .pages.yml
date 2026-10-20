@@ -1,0 +1,371 @@
+# Pages CMS (https://pagescms.org): the forms for editing this site.
+# Each save is a commit; the site rebuilds and is live in about 2 minutes.
+# Text boxes marked "Formatting" take bold, italics, links and bullets.
+
+media:
+  input: public/media
+  output: /media
+  rename: safe
+  categories: [image, video]
+
+content:
+  - name: jobs
+    label: Jobs
+    type: collection
+    path: content/jobs
+    format: yaml
+    filename:
+      template: "{title}.yml"
+      field: create
+    view:
+      fields: [title, team, status]
+      primary: title
+      sort: [title, status]
+    fields:
+      - name: status
+        label: Status
+        type: select
+        description: Draft saves the job without showing it. Open publishes it. Closed takes it down; anyone with an old link is sent to the open positions.
+        options:
+          values:
+            - name: draft
+              label: Draft (not shown)
+            - name: open
+              label: Open (published)
+            - name: closed
+              label: Closed (taken down)
+        required: true
+      - name: title
+        label: Job title
+        type: string
+        required: true
+      - name: team
+        label: Team
+        type: string
+        description: Shown above the title, e.g. Digital & Data Products.
+        required: true
+      - name: posted
+        label: Date posted
+        type: date
+        description: Newest jobs are listed first.
+      - name: lead
+        label: Summary
+        type: text
+        description: One or two sentences under the title.
+        required: true
+      - name: salary
+        label: Salary
+        type: string
+        required: true
+      - name: schedule
+        label: Schedule
+        type: string
+        description: e.g. Full-time, permanent
+        required: true
+      - name: location
+        label: Location
+        type: string
+        required: true
+      - name: jobId
+        label: NYC Jobs ID
+        type: string
+        required: true
+      - name: applyUrl
+        label: Application form link
+        type: string
+        description: Step 1's Apply now button, and the button at the end of the page.
+        required: true
+      - name: nycJobsUrl
+        label: NYC Jobs posting link
+        type: string
+        description: Step 2's Apply on NYC Jobs button.
+        required: true
+      - name: applyNotes
+        label: Notes under How to apply
+        type: text
+        list: true
+        description: e.g. Due to the volume of applications, we may not be able to respond to every application.
+      - name: about
+        label: About the role
+        type: rich-text
+        description: Formatting
+        options:
+          format: markdown
+          media: false
+        required: true
+      - name: aboutNote
+        label: Note under About the role
+        type: string
+        description: Optional, in a gray box, e.g. This position works from our office in Downtown Brooklyn.
+      - name: responsibilities
+        label: Responsibilities
+        type: rich-text
+        description: A bulleted list. Indent a bullet to put it under the one above.
+        options:
+          format: markdown
+          media: false
+        required: true
+      - name: skillsIntro
+        label: Skills introduction
+        type: text
+        description: Optional, above the skills.
+      - name: skills
+        label: Skills we’re seeking
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        description: Each opens to show what it means in this role.
+        fields:
+          - name: title
+            label: Skill
+            type: string
+            required: true
+          - name: description
+            label: What it means in this role
+            type: text
+            required: true
+      - name: education
+        label: Education and experience
+        type: rich-text
+        description: Formatting
+        options:
+          format: markdown
+          media: false
+        required: true
+      - name: benefits
+        label: Benefits and compensation
+        type: rich-text
+        description: Formatting
+        options:
+          format: markdown
+          media: false
+        required: true
+
+  - name: home
+    label: Home page
+    type: file
+    path: content/home.yml
+    format: yaml
+    fields:
+      - name: hero
+        label: Top of the page
+        type: object
+        fields:
+          - name: title
+            label: Title
+            type: text
+            required: true
+          - name: subtitle
+            label: Subtitle
+            type: rich-text
+            description: One paragraph. Formatting
+            options:
+              format: markdown
+              media: false
+            required: true
+          - name: applyLabel
+            label: Apply button label
+            type: string
+            description: Scrolls down to the open positions. Hidden when no jobs are open.
+            required: true
+      - name: ourWork
+        label: Our Work
+        type: object
+        fields:
+          - name: title
+            label: Heading
+            type: string
+            required: true
+          - name: items
+            label: Items
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{title}"
+            description: Each opens to show its text. Drag to reorder.
+            fields:
+              - name: title
+                label: Title
+                type: string
+                required: true
+              - name: body
+                label: Text
+                type: rich-text
+                description: Formatting
+                options:
+                  format: markdown
+                  media: false
+                required: true
+      - name: sections
+        label: Work sections
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        description: Each team's section, with its work. Drag to reorder.
+        fields:
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: body
+            label: Text
+            type: rich-text
+            description: Formatting
+            options:
+              format: markdown
+              media: false
+            required: true
+          - name: buttonLabel
+            label: View work button label
+            type: string
+            description: Phones and tablets, e.g. View Product work.
+            required: true
+          - name: media
+            label: Work
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{caption} ({index})"
+            description: Images and short looping videos, shown in a carousel (desktop) and a lightbox (phones).
+            fields:
+              - name: kind
+                label: Type
+                type: select
+                options:
+                  values:
+                    - name: image
+                      label: Image
+                    - name: video
+                      label: Video (loops silently)
+                required: true
+              - name: image
+                label: Image
+                type: image
+                description: For images.
+              - name: video
+                label: Video
+                type: file
+                description: For videos. MP4, short and small (under 10 MB).
+                options:
+                  extensions: [mp4]
+              - name: alt
+                label: Description for screen readers
+                type: string
+                description: What it shows, in a sentence.
+                required: true
+              - name: caption
+                label: Caption
+                type: string
+                description: Optional gray line under it, e.g. the team.
+              - name: linkText
+                label: Link text
+                type: string
+                description: Optional link under the caption.
+              - name: linkUrl
+                label: Link address
+                type: string
+              - name: fit
+                label: Fit
+                type: select
+                description: Screenshot shows all of it, with gray around. Photo fills the frame, cropping the edges.
+                options:
+                  values:
+                    - name: contain
+                      label: Screenshot (show all)
+                    - name: cover
+                      label: Photo (fill the frame)
+      - name: openPositions
+        label: Open positions
+        type: object
+        fields:
+          - name: title
+            label: Heading
+            type: string
+            list: true
+            description: Each line starts a new line.
+            required: true
+          - name: applyLabel
+            label: Button label on each job
+            type: string
+            required: true
+          - name: emptyMessage
+            label: Message when no jobs are open
+            type: rich-text
+            description: Shown instead of the list. Formatting
+            options:
+              format: markdown
+              media: false
+            required: true
+
+  - name: job-page
+    label: Words on every job page
+    type: file
+    path: content/job-page.yml
+    format: yaml
+    fields:
+      - name: stepOne
+        label: How to apply, step 1
+        type: text
+        required: true
+      - name: stepTwo
+        label: How to apply, step 2
+        type: text
+        description: "{jobId} is replaced with the job's NYC Jobs ID."
+        required: true
+      - name: applyCardTitle
+        label: Closing card heading
+        type: string
+        list: true
+        description: Each line starts a new line.
+        required: true
+      - name: applyCardButton
+        label: Closing card button label
+        type: string
+        required: true
+
+  - name: settings
+    label: Site settings
+    type: file
+    path: content/settings.yml
+    format: yaml
+    fields:
+      - name: siteTitle
+        label: Site name
+        type: string
+        description: In browser tabs and search results.
+        required: true
+      - name: description
+        label: Site description
+        type: text
+        description: For search results and link previews.
+        required: true
+      - name: contactEmail
+        label: Contact email
+        type: string
+        required: true
+      - name: nycOpportunityUrl
+        label: NYC Opportunity link
+        type: string
+        required: true
+      - name: newsletter
+        label: Newsletter sign-up
+        type: object
+        fields:
+          - name: title
+            label: Heading
+            type: string
+            required: true
+          - name: buttonLabel
+            label: Button label
+            type: string
+            required: true
+          - name: url
+            label: Sign-up link
+            type: string
+            required: true

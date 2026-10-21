@@ -64,9 +64,26 @@ function pageAt(address: string): Page {
 function changePage(update: () => void) {
   flushSync(update);
   window.scrollTo({ top: 0, behavior: 'instant' });
-  // Screen readers start from the new page's content.
+  // Screen readers start from the new page's content, and hear its name, as
+  // they would on a full page load (the page switches in place, so they
+  // otherwise wouldn't). Focus stays at the top of main, so Tab goes on from
+  // there in the page's own order.
   document.getElementById('main')?.focus({ preventScroll: true });
+  announcePage();
   enterPage();
+}
+
+/**
+ * Says the new page's title through a hidden live region, once the page has
+ * set it. Cleared first, so going back to a page announces it again.
+ */
+function announcePage() {
+  const region = document.getElementById('page-announcer');
+  if (!region) return;
+  region.textContent = '';
+  window.setTimeout(() => {
+    region.textContent = document.title;
+  }, 150);
 }
 
 function Logo() {
@@ -270,8 +287,13 @@ export function App() {
               aria-labelledby="open-positions-title"
             >
               <h2 id="open-positions-title" className="open-positions__title">
-                {openPositionsSection.title.map((line) => (
-                  <span key={line}>{line}</span>
+                {/* A space between the lines, so screen readers don't run them
+                    together; between block lines it doesn't show. */}
+                {openPositionsSection.title.map((line, i) => (
+                  <Fragment key={line}>
+                    {i > 0 && ' '}
+                    <span>{line}</span>
+                  </Fragment>
                 ))}
               </h2>
               {page.closed && (
@@ -380,6 +402,8 @@ export function App() {
         />
       )}
       <ReviewControls />
+      {/* Hidden: names each new page for screen readers (see announcePage). */}
+      <div id="page-announcer" className="visually-hidden" aria-live="polite" aria-atomic="true" />
     </RouterProvider>
   );
 }

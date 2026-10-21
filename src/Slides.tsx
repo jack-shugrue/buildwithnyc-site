@@ -23,7 +23,11 @@ interface SlidesProps {
  * A team's media, stacked in one frame, shared by the desktop carousel and the
  * phone lightbox.
  *
- * Every item stays loaded, so nothing reloads or blanks between steps. A step
+ * Items load as they come near: the showing one and the one on each side
+ * (so a step never waits), and once loaded they stay, so nothing reloads or
+ * blanks between steps. Images below the screen wait until it's scrolled
+ * near (loading="lazy"), and pick the smallest resized copy that's sharp
+ * enough (srcset, made at build time). A step
  * runs in two parts that never overlap: the old item fades out sliding 16px
  * away, then the new one fades in sliding 16px into place. The first item is
  * simply there.
@@ -37,6 +41,13 @@ export function Slides({ items, index, direction, slideClassName }: SlidesProps)
   const videos = useRef<(HTMLVideoElement | null)[]>([]);
   const previous = useRef(index);
   const [isPaused, setIsPaused] = useState(prefersStill);
+  // Items that have been near the showing one; they keep their source.
+  const loaded = useRef(new Set<number>());
+  const n = items.length;
+  for (let i = 0; i < n; i++) {
+    const away = Math.abs(i - index);
+    if (Math.min(away, n - away) <= 1) loaded.current.add(i);
+  }
 
   useLayoutEffect(() => {
     const from = previous.current;
@@ -92,15 +103,24 @@ export function Slides({ items, index, direction, slideClassName }: SlidesProps)
               ref={(el) => {
                 videos.current[i] = el;
               }}
-              src={item.src}
+              src={loaded.current.has(i) ? item.src : undefined}
+              poster={item.poster}
               aria-label={item.alt}
               muted
               loop
               playsInline
-              preload="auto"
+              preload={i === index ? 'auto' : 'metadata'}
             />
           ) : (
-            <img src={item.src} alt={item.alt} draggable={false} />
+            <img
+              src={loaded.current.has(i) ? item.src : undefined}
+              srcSet={loaded.current.has(i) ? item.srcset : undefined}
+              sizes={item.sizes}
+              alt={item.alt}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+            />
           )}
         </div>
       ))}

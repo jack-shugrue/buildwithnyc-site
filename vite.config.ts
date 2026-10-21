@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import { loadContent } from './scripts/content.ts';
+import { planMedia, writeMedia } from './scripts/media.ts';
 import type { SiteContent } from './src/types.ts';
 
 /*
@@ -49,23 +50,26 @@ function meta(content: SiteContent, page: { title: string; description: string; 
 function sitePages(): Plugin {
   let content: SiteContent | undefined;
   let isServe = false;
+  let media: Awaited<ReturnType<typeof planMedia>> = [];
   const load = () => (content = loadContent(root, SITE.base));
   return {
     name: 'site-pages',
     configResolved(config) {
       isServe = config.command === 'serve';
     },
-    buildStart() {
+    async buildStart() {
       // Locally, a content problem shows on the page (from load below) and
       // clears once fixed; a build stops on it.
       if (isServe) return;
-      load();
+      // The build also points images at resized copies (scripts/media.ts).
+      media = await planMedia(root, load());
       this.addWatchFile(`${root}content`);
     },
     resolveId: (id) => (id === VIRTUAL ? RESOLVED : undefined),
     load(id) {
       if (id !== RESOLVED) return;
-      return `export default ${JSON.stringify(load())};`;
+      // A build uses the content it planned media for; locally, always fresh.
+      return `export default ${JSON.stringify(isServe ? load() : content)};`;
     },
     configureServer(server) {
       server.watcher.add(`${root}content`);
@@ -83,22 +87,29 @@ function sitePages(): Plugin {
         next();
       });
     },
-    transformIndexHtml(html) {
+    transformIndexHtml(html, ctx) {
       let c = content;
       try {
         c ??= load();
       } catch {
         return html; // The app's content import shows the problem.
       }
+      // The two fonts every page uses start downloading with the page,
+      // instead of waiting until the styles have loaded.
+      const fonts = Object.keys(ctx.bundle ?? {})
+        .filter((file) => /(public-sans-variable|source-serif-4-latin-wght-normal)-[\w-]+\.woff2$/.test(file))
+        .map((file) => `<link rel="preload" href="${SITE.base}${file}" as="font" type="font/woff2" crossorigin />`)
+        .join('\n    ');
       return html.replace(
         /<!--meta-->[\s\S]*?<!--\/meta-->/,
-        `<!--meta-->${meta(c, { title: c.settings.siteTitle, description: c.settings.description, path: '' })}<!--/meta-->`,
+        `<!--meta-->${meta(c, { title: c.settings.siteTitle, description: c.settings.description, path: '' })}<!--/meta-->${fonts ? `\n    ${fonts}` : ''}`,
       );
     },
-    closeBundle(error) {
+    async closeBundle(error) {
       // A failed build (e.g. a content problem) has nothing to write.
       if (error || !content) return;
       const out = `${root}dist/`;
+      await writeMedia(media, out);
       const shell = readFileSync(`${out}index.html`, 'utf8');
       const page = (file: string, head: string) =>
         writeFileSync(`${out}${file}`, shell.replace(/<!--meta-->[\s\S]*?<!--\/meta-->/, head));

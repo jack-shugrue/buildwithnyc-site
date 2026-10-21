@@ -6,7 +6,7 @@ import {
   PageNav,
 } from '@nycopportunity/react';
 import { Link as AriaLink } from 'react-aria-components';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { jobPage, settings } from './content.ts';
 import type { JobPosting } from './content.ts';
@@ -196,8 +196,13 @@ export function JobPage({ job }: { job: JobPosting }) {
           floating one lands. */}
       <section ref={card} className="apply-card" aria-labelledby="apply-card-title">
         <h2 id="apply-card-title" className="apply-card__title">
-          {jobPage.applyCardTitle.map((line) => (
-            <span key={line}>{line}</span>
+          {/* A space between the lines, so screen readers don't run them
+              together; between block lines it doesn't show. */}
+          {jobPage.applyCardTitle.map((line, i) => (
+            <Fragment key={line}>
+              {i > 0 && ' '}
+              <span>{line}</span>
+            </Fragment>
           ))}
         </h2>
         <div ref={cardSlot} className="apply-card__action">

@@ -35,6 +35,11 @@
    bar, nothing below the footer. */
 html {
   overscroll-behavior-y: none;
+
+  /* Anything scrolled to (a focused link or button, or a #section) stops
+     below where the sticky header sits, never underneath it (WCAG 2.4.11).
+     The header is about 100px tall at every size. */
+  scroll-padding-block-start: 6.25rem;
 }
 
 html.is-locked {
@@ -787,9 +792,15 @@ main:focus {
    * side), so opening it lays the names over the page instead of squeezing
    * the text column (which re-wrapped the whole article on every hover).
    */
+  /*
+   * The text column also leaves room for the page nav's names when they
+   * open (up to 280px, ending 16px from the screen's edge, plus a 16px
+   * gap), so they never cover the text (WCAG 1.4.13). That only narrows
+   * the column below about 1100px wide.
+   */
   .job__layout {
     display: grid;
-    grid-template-columns: minmax(0, 46rem) 4rem;
+    grid-template-columns: minmax(0, min(46rem, 100vw - 23rem)) 4rem;
     justify-content: space-between;
     column-gap: var(--nyco-space-9);
   }

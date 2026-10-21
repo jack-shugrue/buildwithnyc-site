@@ -42,12 +42,17 @@ npm run build   # into dist/
 - `src/`: the site (React). Components come from the NYCO component library.
 - `vite.config.ts`: the site's address (`SITE`), and the pages the build writes: one per open
   job, one for each closed job's old address, a 404 page and the sitemap.
-- `public/media/`: uploaded images and videos.
+- `public/media/`: uploaded images and videos, kept as uploaded.
+- `scripts/media.ts`: at build time, photos get resized WebP copies (640, 1280 and 1920px wide,
+  offered as a `srcset`) and videos get a poster (their first frame, via ffmpeg, which GitHub's
+  build machines have). Copies go in `dist/media/_opt/`. Videos over 10 MB stop the build.
+- `scripts/rich-text.ts`: turns the CMS's formatted text into a small tree at build time, so
+  visitors don't download a Markdown parser.
 
 ### The component library
 
 `vendor/` holds a built copy of `@nycopportunity/react` and `@nycopportunity/tokens`, named after
-the library commit it came from. To update it, build the library, run `npm pack` in
+the library commit it came from (currently 31cdcd8, nyco-ui PR #51: page nav Escape). To update it, build the library, run `npm pack` in
 `packages/react` and `packages/tokens`, replace the files in `vendor/`, update the two paths in
 `package.json`, and run `npm install`. Once the library is published, depend on it directly.
 

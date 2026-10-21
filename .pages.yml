@@ -247,17 +247,17 @@ content:
               - name: image
                 label: Image
                 type: image
-                description: For images.
+                description: For images. JPG, PNG or WebP at full quality; the site makes smaller copies for each screen. Avoid images with words in them (screen readers can't read them).
               - name: video
                 label: Video
                 type: file
-                description: For videos. MP4, short and small (under 10 MB).
+                description: For videos. MP4, a few seconds, silent, about 3 MB (10 MB at most). Compress it first, e.g. at compress.lochie.me. The site shows its first frame until it plays.
                 options:
                   extensions: [mp4]
               - name: alt
                 label: Description for screen readers
                 type: string
-                description: What it shows, in a sentence.
+                description: What it shows and why it matters, in a sentence, for people who can't see it. Don't start with "Image of", and don't repeat the caption.
                 required: true
               - name: caption
                 label: Caption

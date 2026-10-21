@@ -6,12 +6,16 @@
  * build with a message naming the file and the field, so a half-finished
  * edit never reaches the live site: it keeps showing the last good build.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
+import { toRichText } from './rich-text.ts';
 import type { ClosedJob, JobPosting, SiteContent, WorkItem, WorkSection } from '../src/types.ts';
 
 type Data = Record<string, unknown>;
+
+/** The largest video the build accepts, in MB (about 3 MB is best). */
+const MAX_VIDEO_MB = 10;
 
 /** Fields as Pages CMS labels them (.pages.yml), for problem messages. */
 const LABELS: Record<string, string> = {
@@ -129,16 +133,26 @@ export function loadContent(root: string, base: string): SiteContent {
     return {
       id: slugify(title) || `section-${i + 1}`,
       title,
-      body: text(section, 'body', where),
+      body: toRichText(text(section, 'body', where)),
       buttonLabel: text(section, 'buttonLabel', where),
       work: list<Data>(section, 'media').map((item, j): WorkItem => {
         const at = `${where}, media ${j + 1}`;
         const type = item.kind === 'video' ? 'video' : 'image';
         const linkText = text(item, 'linkText', at, false);
         const linkUrl = text(item, 'linkUrl', at, false);
+        const src = text(item, type === 'video' ? 'video' : 'image', at);
+        // Videos play as uploaded: keep them small so pages stay quick.
+        if (type === 'video' && src.startsWith(`${base}media/`)) {
+          const file = join(root, 'public', src.slice(base.length));
+          const mb = existsSync(file) ? statSync(file).size / 1_000_000 : 0;
+          if (mb > MAX_VIDEO_MB)
+            problems.push(
+              `${at}: the video is ${mb.toFixed(1)} MB. Compress it to under ${MAX_VIDEO_MB} MB (about 3 MB is best), e.g. at compress.lochie.me, then upload it again.`,
+            );
+        }
         return {
           type,
-          src: text(item, type === 'video' ? 'video' : 'image', at),
+          src,
           alt: text(item, 'alt', at),
           label: text(item, 'caption', at, false) || undefined,
           link: linkText && linkUrl ? { text: linkText, href: linkUrl } : undefined,
@@ -150,7 +164,7 @@ export function loadContent(root: string, base: string): SiteContent {
   const home: SiteContent['home'] = {
     hero: {
       title: text(hero, 'title', 'Home page, top of the page'),
-      subtitle: text(hero, 'subtitle', 'Home page, top of the page'),
+      subtitle: toRichText(text(hero, 'subtitle', 'Home page, top of the page')),
       applyLabel: text(hero, 'applyLabel', 'Home page, top of the page'),
     },
     ourWork: {
@@ -160,7 +174,7 @@ export function loadContent(root: string, base: string): SiteContent {
         return {
           id: slugify(title) || `item-${i + 1}`,
           title,
-          body: text(item, 'body', `Home page, Our Work item ${i + 1}`),
+          body: toRichText(text(item, 'body', `Home page, Our Work item ${i + 1}`)),
         };
       }),
     },
@@ -168,7 +182,7 @@ export function loadContent(root: string, base: string): SiteContent {
     openPositions: {
       title: lines(open, 'title', 'Home page, Open positions'),
       applyLabel: text(open, 'applyLabel', 'Home page, Open positions'),
-      emptyMessage: text(open, 'emptyMessage', 'Home page, Open positions'),
+      emptyMessage: toRichText(text(open, 'emptyMessage', 'Home page, Open positions')),
     },
   };
 
@@ -223,16 +237,16 @@ export function loadContent(root: string, base: string): SiteContent {
       applyNotes: list<unknown>(j, 'applyNotes')
         .map((note) => String(note ?? '').trim())
         .filter(Boolean),
-      about: text(j, 'about', where),
+      about: toRichText(text(j, 'about', where)),
       aboutNote: text(j, 'aboutNote', where, false) || undefined,
-      responsibilities: text(j, 'responsibilities', where),
+      responsibilities: toRichText(text(j, 'responsibilities', where)),
       skillsIntro: text(j, 'skillsIntro', where, false) || undefined,
       skills: list<Data>(j, 'skills').map((skill, i) => ({
         title: text(skill, 'title', `${where}, skill ${i + 1}`, true, 'Skill'),
         body: text(skill, 'description', `${where}, skill ${i + 1}`, true, 'What it means in this role'),
       })),
-      education: text(j, 'education', where),
-      benefits: text(j, 'benefits', where),
+      education: toRichText(text(j, 'education', where)),
+      benefits: toRichText(text(j, 'benefits', where)),
     });
   }
 

@@ -1,7 +1,16 @@
+/**
+ * Text written in the CMS with formatting, already parsed at build time
+ * (scripts/rich-text.ts): words, or an element with children.
+ */
+export type RichNode =
+  | string
+  | { t: 'p' | 'strong' | 'em' | 'a' | 'br' | 'ul' | 'ol' | 'li'; href?: string; c: RichNode[] };
+export type RichText = RichNode[];
+
 /*
  * The shape of the site's content, after scripts/content.ts reads the files
- * in content/ (the ones Pages CMS edits). Text marked "Markdown" may hold
- * paragraphs, **bold**, *italics*, [links](https://…) and bulleted lists.
+ * in content/ (the ones Pages CMS edits). Formatted text (RichText) may
+ * hold paragraphs, bold, italics, links and lists.
  */
 
 export interface WorkItem {
@@ -19,14 +28,20 @@ export interface WorkItem {
    * frame edge to edge, cropping as needed, for photos.
    */
   fit?: 'contain' | 'cover';
+  /** Images: resized copies made at build time (WebP), for the browser to pick from. */
+  srcset?: string;
+  /** Images: how wide it shows, so the browser picks the right copy. */
+  sizes?: string;
+  /** Videos: a still of the first frame, shown before it plays (made at build time). */
+  poster?: string;
 }
 
 export interface WorkSection {
   /** Made from the title: the section's #anchor. */
   id: string;
   title: string;
-  /** Markdown. */
-  body: string;
+  /** Formatted text. */
+  body: RichText;
   /** The floating button's label, e.g. "View Product work". */
   buttonLabel: string;
   work: WorkItem[];
@@ -54,19 +69,19 @@ export interface JobPosting {
   portalHref: string;
   /** Notes under How to apply, e.g. response times. */
   applyNotes: string[];
-  /** Markdown. */
-  about: string;
+  /** Formatted text. */
+  about: RichText;
   /** A short note under About the role, e.g. where the role works from. */
   aboutNote?: string;
-  /** Markdown: a bulleted list, with sub-bullets if needed. */
-  responsibilities: string;
+  /** Formatted text: a bulleted list, with sub-bullets if needed. */
+  responsibilities: RichText;
   skillsIntro?: string;
   /** Each skill: a few-word title, and what it means in this role (shown when opened). */
   skills: { title: string; body: string }[];
-  /** Markdown. */
-  education: string;
-  /** Markdown. */
-  benefits: string;
+  /** Formatted text. */
+  education: RichText;
+  /** Formatted text. */
+  benefits: RichText;
 }
 
 /** A closed job: its old address shows the open positions, with a note. */
@@ -88,18 +103,18 @@ export interface SiteContent {
   home: {
     hero: {
       title: string;
-      /** Markdown, one paragraph. */
-      subtitle: string;
+      /** Formatted text, one paragraph. */
+      subtitle: RichText;
       applyLabel: string;
     };
-    ourWork: { title: string; items: { id: string; title: string; body: string }[] };
+    ourWork: { title: string; items: { id: string; title: string; body: RichText }[] };
     sections: WorkSection[];
     openPositions: {
       /** Each item starts a new line. */
       title: string[];
       applyLabel: string;
-      /** Markdown: shown instead of the list when no jobs are open. */
-      emptyMessage: string;
+      /** Formatted text: shown instead of the list when no jobs are open. */
+      emptyMessage: RichText;
     };
   };
   jobPage: {

@@ -64,26 +64,18 @@ function pageAt(address: string): Page {
 function changePage(update: () => void) {
   flushSync(update);
   window.scrollTo({ top: 0, behavior: 'instant' });
-  // Screen readers start from the new page's content, and hear its name, as
-  // they would on a full page load (the page switches in place, so they
-  // otherwise wouldn't). Focus stays at the top of main, so Tab goes on from
-  // there in the page's own order.
-  document.getElementById('main')?.focus({ preventScroll: true });
-  announcePage();
+  // Focus moves to the new page's main heading, so screen readers announce
+  // it ("Sr. Product Strategist, heading level 1") and reading continues
+  // from there, as the page switches in place instead of loading. It isn't a
+  // control, so it shows no ring. (On a job page the "On this page" nav comes
+  // before the heading: Shift+Tab reaches it.)
+  const heading = document.querySelector<HTMLElement>('#main h1') ?? document.getElementById('main');
+  if (heading) {
+    heading.setAttribute('tabindex', '-1');
+    heading.setAttribute('data-nyco-page-nav-target', '');
+    heading.focus({ preventScroll: true });
+  }
   enterPage();
-}
-
-/**
- * Says the new page's title through a hidden live region, once the page has
- * set it. Cleared first, so going back to a page announces it again.
- */
-function announcePage() {
-  const region = document.getElementById('page-announcer');
-  if (!region) return;
-  region.textContent = '';
-  window.setTimeout(() => {
-    region.textContent = document.title;
-  }, 150);
 }
 
 function Logo() {
@@ -402,8 +394,6 @@ export function App() {
         />
       )}
       <ReviewControls />
-      {/* Hidden: names each new page for screen readers (see announcePage). */}
-      <div id="page-announcer" className="visually-hidden" aria-live="polite" aria-atomic="true" />
     </RouterProvider>
   );
 }

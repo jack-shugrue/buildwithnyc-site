@@ -44,8 +44,8 @@ npm run build   # into dist/
   job, one for each closed job's old address, a 404 page and the sitemap.
 - `public/media/`: uploaded images and videos, kept as uploaded.
 - `scripts/media.ts`: at build time, photos get resized WebP copies (640, 1280 and 1920px wide,
-  offered as a `srcset`) and videos get a poster (their first frame, via ffmpeg, which GitHub's
-  build machines have). Copies go in `dist/media/_opt/`. Videos over 10 MB stop the build.
+  offered as a `srcset`) and videos get a poster (their first frame, via ffmpeg, which the publish
+  workflow installs; local builds without ffmpeg skip posters). Copies go in `dist/media/_opt/`. Videos over 10 MB stop the build.
 - `scripts/rich-text.ts`: turns the CMS's formatted text into a small tree at build time, so
   visitors don't download a Markdown parser.
 

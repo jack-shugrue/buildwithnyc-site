@@ -7,8 +7,8 @@
  *   enough. The upload itself stays untouched, as the source.
  * - Videos get a poster: a still of their first frame, shown before they
  *   play (and instead of playing, for people who've asked for less motion).
- *   That needs ffmpeg, which GitHub's build machines have; without it the
- *   build skips posters.
+ *   That needs ffmpeg, which the publish workflow installs; a build
+ *   without it skips posters.
  *
  * Copies go in dist/media/_opt/, named after the file's contents, so a
  * replaced upload never shows a stale copy.

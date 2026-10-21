@@ -65,9 +65,18 @@ export function JobPage({ job }: { job: JobPosting }) {
 
   return (
     <div className="job">
-      <div className="job__layout">
-        {/* First in the page's order, so keyboard users reach "On this page"
-            right after the header; the layout shows it at the right. */}
+      {/* Overview: the top of the page (the page nav's first link). */}
+      <div id="overview" className="job__layout">
+        {/* In reading order: the title, then "On this page", then the job.
+            After a page switch focus lands on the title, so Tab goes straight
+            to the page nav. The layout shows the nav at the right. */}
+        <header className="job__header">
+          <p className="job__team">{job.team}</p>
+          <h1 id="job-title" className="job__title">
+            {job.title}
+          </h1>
+          <p className="job__lead">{job.lead}</p>
+        </header>
         {isDesktop && (
           <PageNav
             variant="bars"
@@ -78,14 +87,7 @@ export function JobPage({ job }: { job: JobPosting }) {
             className="job__nav"
           />
         )}
-        <article id="overview" className="job__main" aria-labelledby="job-title">
-          <header className="job__header">
-            <p className="job__team">{job.team}</p>
-            <h1 id="job-title" className="job__title">
-              {job.title}
-            </h1>
-            <p className="job__lead">{job.lead}</p>
-          </header>
+        <article className="job__main" aria-labelledby="job-title">
 
           {/* The key facts, each in its own tile. */}
           <dl className="job-facts">

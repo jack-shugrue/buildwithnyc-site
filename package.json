@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nycopportunity/react": "file:vendor/nycopportunity-react-0.1.0-31cdcd8.tgz",
-    "@nycopportunity/tokens": "file:vendor/nycopportunity-tokens-0.1.0-31cdcd8.tgz",
+    "@nycopportunity/react": "file:vendor/nycopportunity-react-0.1.0-c81d90a.tgz",
+    "@nycopportunity/tokens": "file:vendor/nycopportunity-tokens-0.1.0-c81d90a.tgz",
     "react": "^19.3.0",
     "react-aria-components": "^1.21.1",
     "react-dom": "^19.3.0"

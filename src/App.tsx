@@ -234,10 +234,13 @@ export function App() {
                   {/* Keyed per layout, so crossing the breakpoint builds each one fresh
                       instead of reusing the other's elements. */}
                   {isDesktop ? (
-                    // Desktop: the work in a carousel beside the text.
+                    // Desktop: the work in a carousel beside the text. The text
+                    // comes first in the page's order (the heading, its links,
+                    // then the carousel's arrows: top to bottom); the layout
+                    // shows the carousel at the left.
                     <Fragment key="desktop">
-                      <MediaCarousel items={section.work} label={`${section.title} work`} />
                       <div className="work-section__body">{text}</div>
+                      <MediaCarousel items={section.work} label={`${section.title} work`} />
                     </Fragment>
                   ) : (
                     <Fragment key="phone">
@@ -282,18 +285,19 @@ export function App() {
                 <ul className="open-positions__list">
                   {openPositions.map((job) => (
                     // The whole row opens the job: its title link covers the
-                    // row, with Apply now on top of it.
+                    // row. Apply now goes to the same page, so it's the row's
+                    // look, not a second link: one stop per job for keyboard
+                    // and screen reader users, and clicks pass through to the row.
                     <li key={job.href} className="open-positions__row">
                       <AriaLink href={job.href} className="open-positions__job">
                         {job.title}
                       </AriaLink>
-                      <AriaLink
-                        href={job.href}
-                        aria-label={`${openPositionsSection.applyLabel}: ${job.title}`}
+                      <span
+                        aria-hidden="true"
                         className="nyco-button nyco-button--secondary nyco-button--small"
                       >
                         {openPositionsSection.applyLabel}
-                      </AriaLink>
+                      </span>
                     </li>
                   ))}
                 </ul>

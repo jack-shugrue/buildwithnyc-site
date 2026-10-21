@@ -1,11 +1,28 @@
 import { Button, ChevronLeftIcon, ChevronRightIcon } from '@nycopportunity/react';
 import { useRef, useState } from 'react';
-import type { PointerEvent } from 'react';
+import type { FocusEvent, PointerEvent } from 'react';
 import { Slides } from './Slides.tsx';
 import type { WorkItem } from './content.ts';
 
 /** How far a pointer has to travel sideways to change the slide. */
 const SWIPE_PX = 40;
+/** Room kept above and below the carousel when it's brought into view. */
+const VIEW_MARGIN = 24;
+
+/**
+ * Brings the whole carousel into view: centered on the screen if it fits,
+ * otherwise its arrows at the bottom with as much of the frame as fits above.
+ * Glides unless the user prefers reduced motion (the page's scroll-behavior).
+ */
+function reveal(carousel: HTMLElement) {
+  const box = carousel.getBoundingClientRect();
+  if (box.top >= VIEW_MARGIN && box.bottom <= window.innerHeight - VIEW_MARGIN) return;
+  const fits = box.height + 2 * VIEW_MARGIN <= window.innerHeight;
+  const by = fits
+    ? box.top - (window.innerHeight - box.height) / 2
+    : box.bottom - (window.innerHeight - VIEW_MARGIN);
+  window.scrollBy({ top: by });
+}
 
 interface MediaCarouselProps {
   items: WorkItem[];
@@ -26,7 +43,20 @@ export function MediaCarousel({ items, label }: MediaCarouselProps) {
   // Null until the first step, so the first item is simply there.
   const [direction, setDirection] = useState<'next' | 'previous' | null>(null);
   const swipeStart = useRef<number | null>(null);
+  const carousel = useRef<HTMLDivElement>(null);
   const hasMany = items.length > 1;
+
+  /**
+   * Tabbing onto the arrows (not clicking them, and not moving between
+   * them): the browser scrolls just the arrow into view, but the arrows mean
+   * little without the frame above them, so show the carousel whole.
+   */
+  function onControlsFocus(event: FocusEvent<HTMLDivElement>) {
+    if (event.currentTarget.contains(event.relatedTarget)) return;
+    if (!event.target.matches(':focus-visible')) return;
+    // After the browser's own scroll to the arrow.
+    requestAnimationFrame(() => carousel.current && reveal(carousel.current));
+  }
 
   /** One step back or forward, looping at the ends; builds on the latest slide. */
   function step(by: 1 | -1) {
@@ -44,7 +74,13 @@ export function MediaCarousel({ items, label }: MediaCarouselProps) {
   if (!items.length) return null;
 
   return (
-    <div className="carousel" role="group" aria-roledescription="carousel" aria-label={label}>
+    <div
+      ref={carousel}
+      className="carousel"
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={label}
+    >
       <div
         className="carousel__frame"
         onPointerDown={(event) => (swipeStart.current = event.clientX)}
@@ -74,7 +110,7 @@ export function MediaCarousel({ items, label }: MediaCarouselProps) {
       </div>
 
       {hasMany && (
-        <div className="carousel__controls">
+        <div className="carousel__controls" onFocus={onControlsFocus}>
           <Button
             iconOnly
             variant="neutral"

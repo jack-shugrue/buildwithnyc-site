@@ -18,8 +18,9 @@
 }
 
 /* The library's button styles size it as border-box, which <button> is by
-   default but a link styled as a button is not. */
-a.nyco-button {
+   default but a link (or the open positions' Apply now span) styled as a
+   button is not. */
+:is(a, span).nyco-button {
   box-sizing: border-box;
 }
 
@@ -232,10 +233,13 @@ a:has(> .logo) {
   border-radius: inherit;
 }
 
+/* Apply now is the row's look, not a link of its own: clicks fall through to
+   the title's link underneath. */
 .open-positions__row .nyco-button {
   position: relative;
   flex: none;
   text-decoration: none;
+  pointer-events: none;
 }
 
 @media (hover: hover) {
@@ -245,6 +249,11 @@ a:has(> .logo) {
 
   .open-positions__row:hover .open-positions__job {
     color: var(--nyco-color-text-primary);
+  }
+
+  /* Apply now sits on the gray row: it goes a step darker with it. */
+  .open-positions__row:hover .nyco-button--secondary {
+    --nyco-button-bg: var(--nyco-color-bg-tertiary);
   }
 }
 
@@ -258,15 +267,14 @@ a:has(> .logo) {
   color: var(--nyco-color-text-primary);
 }
 
+.open-positions__row:has(.open-positions__job[data-pressed]) .nyco-button--secondary {
+  --nyco-button-bg: var(--nyco-color-bg-tertiary);
+}
+
 /* Keyboard focus on the title: the ring goes around the whole row. */
 .open-positions__row:has(.open-positions__job[data-focus-visible]) {
   outline: var(--nyco-focus-width) solid var(--nyco-color-border-focus);
   outline-offset: var(--nyco-focus-offset);
-}
-
-/* Apply now sits on the gray row: its hover and press go a step darker. */
-.open-positions__row .nyco-button--secondary:is([data-hovered], [data-pressed]) {
-  --nyco-button-bg: var(--nyco-color-bg-tertiary);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1206,6 +1214,17 @@ main:focus {
     column-gap: var(--nyco-space-3);
     align-items: start;
     padding-block-end: 6.5rem;
+  }
+
+  /* The text comes first in the page's order; the carousel shows at the left. */
+  .work-section > .carousel {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .work-section > .work-section__body {
+    grid-row: 1;
+    grid-column: 2;
   }
 
   /* 256px under the last section's carousel. */

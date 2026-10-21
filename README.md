@@ -52,7 +52,7 @@ npm run build   # into dist/
 ### The component library
 
 `vendor/` holds a built copy of `@nycopportunity/react` and `@nycopportunity/tokens`, named after
-the library commit it came from (currently c81d90a, nyco-ui PR #51: page nav Escape). To update it, build the library, run `npm pack` in
+the library commit it came from (currently 0e5e491, nyco-ui #51: page nav Escape). To update it, build the library, run `npm pack` in
 `packages/react` and `packages/tokens`, replace the files in `vendor/`, update the two paths in
 `package.json`, and run `npm install`. Once the library is published, depend on it directly.
 

@@ -257,21 +257,27 @@ a:has(> .logo) {
   }
 }
 
-/* Touch screens have no hover: the gray shows while pressed. */
-.open-positions__row:has(.open-positions__job[data-pressed]) {
+/* Keyboard focus looks like hover (as menu items do), and touch screens,
+   which have no hover, show it while pressed. */
+.open-positions__row:has(.open-positions__job:is([data-pressed], [data-focus-visible])) {
   background-color: var(--nyco-color-bg-secondary);
-  scale: var(--nyco-motion-press-scale-large);
 }
 
-.open-positions__row:has(.open-positions__job[data-pressed]) .open-positions__job {
+.open-positions__row:has(.open-positions__job:is([data-pressed], [data-focus-visible]))
+  .open-positions__job {
   color: var(--nyco-color-text-primary);
 }
 
-.open-positions__row:has(.open-positions__job[data-pressed]) .nyco-button--secondary {
+.open-positions__row:has(.open-positions__job:is([data-pressed], [data-focus-visible]))
+  .nyco-button--secondary {
   --nyco-button-bg: var(--nyco-color-bg-tertiary);
 }
 
-/* Keyboard focus on the title: the ring goes around the whole row. */
+.open-positions__row:has(.open-positions__job[data-pressed]) {
+  scale: var(--nyco-motion-press-scale-large);
+}
+
+/* Keyboard focus on the title: the ring goes around the whole row too. */
 .open-positions__row:has(.open-positions__job[data-focus-visible]) {
   outline: var(--nyco-focus-width) solid var(--nyco-color-border-focus);
   outline-offset: var(--nyco-focus-offset);

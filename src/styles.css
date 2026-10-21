@@ -684,10 +684,16 @@ a:has(> .logo) {
   translate: 0 -200%;
 }
 
+/* It sits over the City bar's words, so the gap between the link and its
+   ring is filled white: nothing behind shows inside the ring. (A transparent
+   outline keeps a ring in Windows high contrast mode, where shadows vanish.) */
 .skip-link:focus {
   translate: none;
-  outline: var(--nyco-focus-width) solid var(--nyco-color-border-focus);
+  outline: var(--nyco-focus-width) solid transparent;
   outline-offset: var(--nyco-focus-offset);
+  box-shadow:
+    0 0 0 var(--nyco-focus-offset) var(--nyco-color-bg-primary),
+    0 0 0 calc(var(--nyco-focus-offset) + var(--nyco-focus-width)) var(--nyco-color-border-focus);
 }
 
 /* The skip link focuses main itself; it needs no ring of its own. */

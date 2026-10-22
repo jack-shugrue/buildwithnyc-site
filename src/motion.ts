@@ -135,6 +135,10 @@ export function arrive(hash: string, isNewPage: boolean) {
   const id = decodeURIComponent(hash.slice(1));
   const section = id ? document.getElementById(id) : null;
   if (!section && isNewPage) return;
+  // The skip link: the main content takes focus at once (screen readers
+  // start reading there, and the link, losing focus, fades away instead of
+  // riding the scroll); the page glides there meanwhile.
+  if (section?.id === 'main') section.focus({ preventScroll: true });
   let frame = 0;
   const pause = window.setTimeout(glide, isNewPage ? ARRIVAL_PAUSE : 0);
   const stopWatching = watchForIntent(() => cancelTrip());

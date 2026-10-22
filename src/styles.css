@@ -688,12 +688,12 @@ a:has(> .logo) {
 }
 
 /* Keyboard users' first stop: hidden until it has focus. */
-/* Off screen until focused (the first Tab on a page), then just below the
+/* Hidden until focused (the first Tab on a page), then just below the
    header, lined up with the logo and the page's left edge, in the space
    above the page's title, covering nothing. */
 .skip-link {
-  position: absolute;
-  inset-block-start: -10rem;
+  position: fixed;
+  inset-block-start: 4.75rem;
   inset-inline-start: var(--nyco-page-inline);
   z-index: 100;
   padding: var(--nyco-space-1) var(--nyco-space-2);
@@ -702,18 +702,29 @@ a:has(> .logo) {
   color: var(--nyco-color-text-link);
   font-size: var(--nyco-font-size-md);
   white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
 }
 
-/* It sits over the City bar's words, so the gap between the link and its
-   ring is filled white: nothing behind shows inside the ring. (A transparent
+/* It sits over the page's words, so the gap between the link and its ring
+   is filled white: nothing behind shows inside the ring. (A transparent
    outline keeps a ring in Windows high contrast mode, where shadows vanish.) */
 .skip-link:focus {
-  inset-block-start: 4.75rem;
+  opacity: 1;
+  pointer-events: auto;
   outline: var(--nyco-focus-width) solid transparent;
   outline-offset: var(--nyco-focus-offset);
   box-shadow:
     0 0 0 var(--nyco-focus-offset) var(--nyco-color-bg-primary),
     0 0 0 calc(var(--nyco-focus-offset) + var(--nyco-focus-width)) var(--nyco-color-border-focus);
+}
+
+/* Appears at once on focus; used (or tabbed past), it fades away in place,
+   fixed to the screen, so it never rides the page's scroll. */
+@media (prefers-reduced-motion: no-preference) {
+  .skip-link:not(:focus) {
+    transition: opacity 150ms ease-out;
+  }
 }
 
 /* The skip link focuses main itself; it needs no ring of its own. */

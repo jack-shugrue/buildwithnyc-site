@@ -28,7 +28,7 @@ type SectionId = (typeof SECTIONS)[number]['id'];
 const heading = (id: SectionId) => SECTIONS.find((s) => s.id === id)!.label;
 
 /** Height of the sticky site header, so a section chosen in the page nav lands below it. */
-const HEADER_HEIGHT = 100;
+const HEADER_HEIGHT = 60;
 
 /**
  * A job posting: the team, title and lead; then How to apply, one panel with

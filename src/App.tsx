@@ -161,6 +161,9 @@ export function App() {
         logo={<Logo />}
         homeLabel={`${settings.siteTitle} home`}
         homeHref={links.home}
+        // No "Official website of the City of New York" bar: this site isn't
+        // on a City (.gov) address, so it doesn't claim to be official.
+        cityBar={false}
         isSticky
         hideOnScroll
       >

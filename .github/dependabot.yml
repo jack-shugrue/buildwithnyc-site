@@ -1,0 +1,19 @@
+# Security and version updates for the site's tools (GitHub Dependabot).
+# Each update arrives as a pull request; the build checks it before merging.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    # The NYCO component library is a vendored copy; update it by hand
+    # (see README, "The component library").
+    ignore:
+      - dependency-name: '@nycopportunity/*'
+    groups:
+      tools:
+        patterns: ['*']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

@@ -38,8 +38,8 @@ html {
 
   /* Anything scrolled to (a focused link or button, or a #section) stops
      below where the sticky header sits, never underneath it (WCAG 2.4.11).
-     The header is about 100px tall at every size. */
-  scroll-padding-block-start: 6.25rem;
+     The header is about 60px tall at every size. */
+  scroll-padding-block-start: 4.5rem;
 }
 
 html.is-locked {

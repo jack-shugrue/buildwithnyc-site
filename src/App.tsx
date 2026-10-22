@@ -65,17 +65,46 @@ function changePage(update: () => void) {
   flushSync(update);
   window.scrollTo({ top: 0, behavior: 'instant' });
   // Focus moves to the new page's main heading, so screen readers announce
-  // it ("Sr. Product Strategist, heading level 1") and reading continues
-  // from there, as the page switches in place instead of loading. It isn't a
-  // control, so it shows no ring. (On a job page the "On this page" nav comes
-  // before the heading: Shift+Tab reaches it.)
+  // it ("Sr. Product Strategist, heading level 1") and the next Tab goes on
+  // from the top of the new page, as the page switches in place instead of
+  // loading. It isn't a control, so it shows no ring. (On a job page the
+  // "On this page" nav follows the heading, so Tab reaches it next.)
   const heading = document.querySelector<HTMLElement>('#main h1') ?? document.getElementById('main');
   if (heading) {
     heading.setAttribute('tabindex', '-1');
     heading.setAttribute('data-nyco-page-nav-target', '');
     heading.focus({ preventScroll: true });
+    keepFocusOn(heading);
   }
   enterPage();
+}
+
+/**
+ * A page chosen from a dropdown (the header's or footer's Careers menu): as
+ * the menu closes it hands focus back to its button (a frame or more later),
+ * pulling the keyboard back to where the old page was. Until the next key
+ * press or click, focus that lands outside the page's content goes back to
+ * the new page's heading instead. Then it's the visitor's again.
+ */
+function keepFocusOn(heading: HTMLElement) {
+  const main = document.getElementById('main');
+  const restore = (event: FocusEvent) => {
+    if (main && !main.contains(event.target as Node)) heading.focus({ preventScroll: true });
+  };
+  const stop = () => {
+    document.removeEventListener('focusin', restore);
+    document.removeEventListener('keydown', stop, true);
+    document.removeEventListener('pointerdown', stop, true);
+  };
+  document.addEventListener('focusin', restore);
+  // Listen from the next tick: the key or click that chose the page is
+  // still finishing now.
+  window.setTimeout(() => {
+    document.addEventListener('keydown', stop, true);
+    document.addEventListener('pointerdown', stop, true);
+  });
+  // A safety net, in case nothing comes back and no key is pressed.
+  window.setTimeout(stop, 5000);
 }
 
 function Logo() {

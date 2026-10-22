@@ -688,12 +688,13 @@ a:has(> .logo) {
 }
 
 /* Keyboard users' first stop: hidden until it has focus. */
-/* Off screen until focused (the first Tab on a page), then centered just
-   below the header, in the space above the page's title, covering nothing. */
+/* Off screen until focused (the first Tab on a page), then just below the
+   header, lined up with the logo and the page's left edge, in the space
+   above the page's title, covering nothing. */
 .skip-link {
   position: absolute;
   inset-block-start: -10rem;
-  inset-inline-start: 50%;
+  inset-inline-start: var(--nyco-page-inline);
   z-index: 100;
   padding: var(--nyco-space-1) var(--nyco-space-2);
   border-radius: var(--nyco-radius-md);
@@ -701,7 +702,6 @@ a:has(> .logo) {
   color: var(--nyco-color-text-link);
   font-size: var(--nyco-font-size-md);
   white-space: nowrap;
-  translate: -50% 0;
 }
 
 /* It sits over the City bar's words, so the gap between the link and its

@@ -688,24 +688,27 @@ a:has(> .logo) {
 }
 
 /* Keyboard users' first stop: hidden until it has focus. */
+/* Off screen until focused (the first Tab on a page), then centered just
+   below the header, in the space above the page's title, covering nothing. */
 .skip-link {
   position: absolute;
-  inset-block-start: var(--nyco-space-1);
-  inset-inline-start: var(--nyco-page-inline);
+  inset-block-start: -10rem;
+  inset-inline-start: 50%;
   z-index: 100;
   padding: var(--nyco-space-1) var(--nyco-space-2);
   border-radius: var(--nyco-radius-md);
   background: var(--nyco-color-bg-primary);
   color: var(--nyco-color-text-link);
   font-size: var(--nyco-font-size-md);
-  translate: 0 -200%;
+  white-space: nowrap;
+  translate: -50% 0;
 }
 
 /* It sits over the City bar's words, so the gap between the link and its
    ring is filled white: nothing behind shows inside the ring. (A transparent
    outline keeps a ring in Windows high contrast mode, where shadows vanish.) */
 .skip-link:focus {
-  translate: none;
+  inset-block-start: 4.75rem;
   outline: var(--nyco-focus-width) solid transparent;
   outline-offset: var(--nyco-focus-offset);
   box-shadow:
